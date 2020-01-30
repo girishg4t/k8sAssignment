@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
+	"strconv"
 	"time"
 
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/fields"
 
+	"github.com/girishg4t/k8sAssignment/utils"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
 )
@@ -30,7 +33,7 @@ var api *k8sServiceAPI
 
 func main() {
 	api = &k8sServiceAPI{
-		cs: getKubeHandle(),
+		cs: utils.GetKubeHandle(),
 	}
 
 	watchlist := cache.NewListWatchFromClient(api.cs.AppsV1().RESTClient(), "deployments",
@@ -54,6 +57,13 @@ func onAdd(obj interface{}) {
 	if name == "" {
 		return
 	}
+
+	isServiceReq, _ := strconv.ParseBool(dep.Spec.Template.ObjectMeta.Annotations["auto-create-svc"])
+	if !isServiceReq {
+		fmt.Println("service not required")
+		return
+	}
+
 	service, err := extractServiceInfoFromDeployment(dep)
 	if err != nil {
 		return

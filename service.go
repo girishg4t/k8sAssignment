@@ -1,9 +1,7 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -67,10 +65,6 @@ func extractServiceInfoFromDeployment(dep *v1.Deployment) (*serviceResource, err
 	metadata := dep.Spec.Template.ObjectMeta
 	spec := dep.Spec.Template.Spec
 	serviceName := dep.GetName() + "-service"
-	isServiceReq, _ := strconv.ParseBool(metadata.Annotations["auto-create-svc"])
-	if !isServiceReq {
-		return nil, errors.New("service not required")
-	}
 
 	antServiceType := metadata.Annotations["auto-create-svc-type"]
 	serviceType := corev1.ServiceTypeClusterIP
