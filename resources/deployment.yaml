@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: nginx-deployment
   namespace: mynamespace
+  annotations:
+      auto-create-svc: "true"
+      auto-create-svc-type: "NodePort"
   labels:
     app: nginx
 spec:
@@ -11,10 +14,7 @@ spec:
     matchLabels:
       app: nginx
   template:
-    metadata:
-      annotations:
-        auto-create-svc: "true"
-        auto-create-svc-type: "NodePort"
+    metadata: 
       labels:
         app: nginx
     spec:

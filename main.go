@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/fields"
+	"k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/client-go/informers"
 
 	"github.com/girishg4t/k8sAssignment/utils"
 	"k8s.io/client-go/kubernetes"
@@ -22,32 +22,41 @@ type serviceResource struct {
 	ns       string
 }
 
-type k8sServiceAPI struct {
+type controller struct {
 	cs kubernetes.Interface
 	s  *serviceResource
 }
 
 const ns string = "mynamespace"
 
-var api *k8sServiceAPI
+var c *controller
 
 func main() {
-	api = &k8sServiceAPI{
-		cs: utils.GetKubeHandle(),
+	fmt.Println("Shared Informer app started")
+
+	clientset := utils.GetKubeHandle()
+
+	c = &controller{
+		cs: clientset,
 	}
 
-	watchlist := cache.NewListWatchFromClient(api.cs.AppsV1().RESTClient(), "deployments",
-		ns, fields.Everything())
-	_, controller := cache.NewInformer(watchlist, &v1.Deployment{}, time.Second*0,
-		cache.ResourceEventHandlerFuncs{
-			AddFunc:    onAdd,
-			DeleteFunc: onDelete})
-
-	stop := make(chan struct{})
-	go controller.Run(stop)
-	for {
-		time.Sleep(time.Second)
+	factory := informers.NewSharedInformerFactoryWithOptions(
+		clientset, 0,
+		informers.WithNamespace(ns))
+	informer := factory.Apps().V1().Deployments().Informer()
+	stopper := make(chan struct{})
+	defer close(stopper)
+	defer runtime.HandleCrash()
+	informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    onAdd,
+		DeleteFunc: onDelete,
+	})
+	go informer.Run(stopper)
+	if !cache.WaitForCacheSync(stopper, informer.HasSynced) {
+		runtime.HandleError(fmt.Errorf("Timed out waiting for caches to sync"))
+		return
 	}
+	<-stopper
 }
 
 func onAdd(obj interface{}) {
@@ -58,7 +67,7 @@ func onAdd(obj interface{}) {
 		return
 	}
 
-	isServiceReq, _ := strconv.ParseBool(dep.Spec.Template.ObjectMeta.Annotations["auto-create-svc"])
+	isServiceReq, _ := strconv.ParseBool(dep.ObjectMeta.Annotations["auto-create-svc"])
 	if !isServiceReq {
 		fmt.Println("service not required")
 		return
@@ -68,12 +77,12 @@ func onAdd(obj interface{}) {
 	if err != nil {
 		return
 	}
-	api.s = service
-	exists := isServiceExists(api)
+	c.s = service
+	exists := isServiceExists(c)
 	if exists {
 		return
 	}
-	err = createService(api)
+	err = createService(c)
 	if err != nil {
 		panic(err)
 	}
@@ -88,12 +97,12 @@ func onDelete(obj interface{}) {
 	serviceName := name + "-service"
 	s := &serviceResource{ns: ns,
 		name: serviceName}
-	api.s = s
-	exists := isServiceExists(api)
+	c.s = s
+	exists := isServiceExists(c)
 	if !exists {
 		return
 	}
-	err := deleteService(api)
+	err := deleteService(c)
 	if err != nil {
 		panic(err)
 	}

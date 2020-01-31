@@ -9,7 +9,7 @@ import (
 
 func TestCreateService(t *testing.T) {
 
-	api := &k8sServiceAPI{
+	api := &controller{
 		s: &serviceResource{ns: "test-ns",
 			name: "test-service",
 			port: 8080,
@@ -27,7 +27,7 @@ func TestCreateService(t *testing.T) {
 
 func TestDeleteService(t *testing.T) {
 
-	api := &k8sServiceAPI{
+	api := &controller{
 		s: &serviceResource{ns: "test-ns",
 			name: "test-service",
 			port: 8080,
@@ -45,7 +45,7 @@ func TestDeleteService(t *testing.T) {
 
 func TestDeleteServiceNotFound(t *testing.T) {
 
-	api := &k8sServiceAPI{
+	api := &controller{
 		s: &serviceResource{ns: "test-ns",
 			name: "test-service",
 			port: 8080,
@@ -62,7 +62,7 @@ func TestDeleteServiceNotFound(t *testing.T) {
 
 func TestIsServiceExists(t *testing.T) {
 
-	api := &k8sServiceAPI{
+	api := &controller{
 		s: &serviceResource{ns: "test-ns",
 			name: "test-service",
 			port: 8080,
@@ -80,7 +80,7 @@ func TestIsServiceExists(t *testing.T) {
 
 func TestIsServiceNotExists(t *testing.T) {
 
-	api := &k8sServiceAPI{
+	api := &controller{
 		s: &serviceResource{ns: "test-ns",
 			name: "test-service",
 			port: 8080,
