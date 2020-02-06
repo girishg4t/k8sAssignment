@@ -9,17 +9,15 @@ import (
 
 func TestCreateService(t *testing.T) {
 
-	api := &controller{
-		s: &serviceResource{ns: "test-ns",
-			name: "test-service",
-			port: 8080,
-			selector: map[string]string{
-				"app": "demo-app",
-			}},
-		cs: testclient.NewSimpleClientset(),
-	}
-
-	err := createService(api)
+	s := &serviceResource{
+		ns:   "test-ns",
+		name: "test-service",
+		port: 8080,
+		selector: map[string]string{
+			"app": "demo-app",
+		}}
+	cs := testclient.NewSimpleClientset()
+	err := createService(s, cs)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -27,17 +25,17 @@ func TestCreateService(t *testing.T) {
 
 func TestDeleteService(t *testing.T) {
 
-	api := &controller{
-		s: &serviceResource{ns: "test-ns",
-			name: "test-service",
-			port: 8080,
-			selector: map[string]string{
-				"app": "demo-app",
-			}},
-		cs: testclient.NewSimpleClientset(),
-	}
-	createService(api)
-	err := deleteService(api)
+	s := &serviceResource{
+		ns:   "test-ns",
+		name: "test-service",
+		port: 8080,
+		selector: map[string]string{
+			"app": "demo-app",
+		}}
+	cs := testclient.NewSimpleClientset()
+
+	createService(s, cs)
+	err := deleteService(s, cs)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -45,16 +43,14 @@ func TestDeleteService(t *testing.T) {
 
 func TestDeleteServiceNotFound(t *testing.T) {
 
-	api := &controller{
-		s: &serviceResource{ns: "test-ns",
-			name: "test-service",
-			port: 8080,
-			selector: map[string]string{
-				"app": "demo-app",
-			}},
-		cs: testclient.NewSimpleClientset(),
-	}
-	err := deleteService(api)
+	s := &serviceResource{ns: "test-ns",
+		name: "test-service",
+		port: 8080,
+		selector: map[string]string{
+			"app": "demo-app",
+		}}
+	cs := testclient.NewSimpleClientset()
+	err := deleteService(s, cs)
 	if err == nil {
 		t.Fatal(err.Error())
 	}
@@ -62,17 +58,15 @@ func TestDeleteServiceNotFound(t *testing.T) {
 
 func TestIsServiceExists(t *testing.T) {
 
-	api := &controller{
-		s: &serviceResource{ns: "test-ns",
-			name: "test-service",
-			port: 8080,
-			selector: map[string]string{
-				"app": "demo-app",
-			}},
-		cs: testclient.NewSimpleClientset(),
-	}
-	createService(api)
-	exists := isServiceExists(api)
+	s := &serviceResource{ns: "test-ns",
+		name: "test-service",
+		port: 8080,
+		selector: map[string]string{
+			"app": "demo-app",
+		}}
+	cs := testclient.NewSimpleClientset()
+	createService(s, cs)
+	exists := isServiceExists(s, cs)
 	if !exists {
 		t.Fatal(errors.New("service should be present"))
 	}
@@ -80,16 +74,14 @@ func TestIsServiceExists(t *testing.T) {
 
 func TestIsServiceNotExists(t *testing.T) {
 
-	api := &controller{
-		s: &serviceResource{ns: "test-ns",
-			name: "test-service",
-			port: 8080,
-			selector: map[string]string{
-				"app": "demo-app",
-			}},
-		cs: testclient.NewSimpleClientset(),
-	}
-	exists := isServiceExists(api)
+	s := &serviceResource{ns: "test-ns",
+		name: "test-service",
+		port: 8080,
+		selector: map[string]string{
+			"app": "demo-app",
+		}}
+	cs := testclient.NewSimpleClientset()
+	exists := isServiceExists(s, cs)
 	if exists {
 		t.Fatal(errors.New("service should not be present"))
 	}

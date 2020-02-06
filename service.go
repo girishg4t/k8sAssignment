@@ -7,13 +7,14 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/client-go/kubernetes"
 )
 
-func createService(c *controller) error {
+func createService(s *serviceResource, cs kubernetes.Interface) error {
 	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      c.s.name,
-			Namespace: c.s.ns,
+			Name:      s.name,
+			Namespace: s.ns,
 			Labels: map[string]string{
 				"app": "demo-app",
 			},
@@ -22,18 +23,18 @@ func createService(c *controller) error {
 			Ports: []corev1.ServicePort{
 				{
 					Name:       "http",
-					Port:       c.s.port,
-					TargetPort: intstr.FromInt(int(c.s.port)),
+					Port:       s.port,
+					TargetPort: intstr.FromInt(int(s.port)),
 				},
 			},
-			Selector: c.s.selector,
-			Type:     c.s.stype,
+			Selector: s.selector,
+			Type:     s.stype,
 		},
 	}
 
 	// Create Service
 	fmt.Println("Creating service...")
-	result, err := c.cs.CoreV1().Services(c.s.ns).Create(service)
+	result, err := cs.CoreV1().Services(s.ns).Create(service)
 	if err != nil {
 		return err
 	}
@@ -41,21 +42,21 @@ func createService(c *controller) error {
 	return nil
 }
 
-func deleteService(c *controller) error {
+func deleteService(s *serviceResource, cs kubernetes.Interface) error {
 	fmt.Println("Deleting service...")
-	err := c.cs.CoreV1().Services(c.s.ns).Delete(c.s.name, &metav1.DeleteOptions{})
+	err := cs.CoreV1().Services(s.ns).Delete(s.name, &metav1.DeleteOptions{})
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Deleted service %q.\n", c.s.name)
+	fmt.Printf("Deleted service %q.\n", s.name)
 	return nil
 }
 
-func isServiceExists(c *controller) bool {
-	_, err := c.cs.CoreV1().Services(c.s.ns).Get(c.s.name, metav1.GetOptions{})
+func isServiceExists(s *serviceResource, cs kubernetes.Interface) bool {
+	_, err := cs.CoreV1().Services(s.ns).Get(s.name, metav1.GetOptions{})
 	if err != nil {
 		fmt.Printf("Service with name %s in namespace %s not found \n",
-			c.s.name, c.s.ns)
+			s.name, s.ns)
 		return false
 	}
 	return true
