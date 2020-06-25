@@ -1,0 +1,75 @@
+categories:
+- Input
+questions:
+- variable: global.resourceSize
+  default: small
+  description: |
+    What is the resource unit you would like to allocate for the deployment?
+      Small -> 4 CPU Core & 16 GB RAM
+      Medium -> 8 CPU Core & 32 GB RAM
+      Large -> 16 CPU Core & 64 GB RAM
+      Xlarge (eXtra Large) -> 32 CPU Core & 128 GB RAM
+  type: enum
+  group: Resource Unit
+  options:
+    - small
+    - medium
+    - large
+    - xlarge
+  label: Select Resource Unit Size?
+  required: true
+- variable: oracle.oracle.username
+  default: metricstream
+  type: string
+  group: Oracle Credentials
+  label: User Name
+  required: true
+- variable: oracle.oracle.password
+  default: password
+  type: string
+  group: Oracle Credentials
+  label: Password
+  required: true
+- variable: oracle.msrepo.url
+  default: http://10.100.1.97:8081/msrepo/k8s/ms-ri/7.20.6
+  type: string
+  group: MSREPO
+  label: MS Repo URL
+- variable: oracle.aws.s3.url
+  type: string
+  group: AWS URL
+  label: URL
+- variable: oracle.aws.region
+  default: Provide region name
+  type: string
+  group: AWS Credentials
+  label: Region Name
+- variable: oracle.aws.access.key
+  default: Provide access key 
+  type: string
+  group: AWS Credentials
+  label: Access Key 
+- variable: oracle.aws.secret.access.key
+  default: Provide secret access key
+  type: string
+  group: AWS Credentials
+  label: Secret Access Key
+- variable: persistence.enabled
+  default: "false"
+  description: "Enable persistent volume for WordPress"
+  type: boolean
+  required: true
+  label: WordPress Persistent Volume Enabled
+  show_subquestion_if: true
+  group: "WordPress Settings"
+  subquestions:
+- variable: persistence.size
+  default: "10Gi"
+  description: "WordPress Persistent Volume Size"
+  type: string
+  label: WordPress Volume Size
+- variable: persistence.storageClass
+  default: ""
+  description: "If undefined or null, uses the default StorageClass. Default to null"
+  type: storageclass
+  label: Default StorageClass for WordPress

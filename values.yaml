@@ -1,0 +1,208 @@
+imageCredentials:
+  registry: https://cloud.rnd.metricstream.com/
+  username: k8s
+  password: Welcome*123
+oracle:
+  enabled: true
+  image:
+    registry: cloud.rnd.metricstream.com
+    oracle:
+      tag: 12.2.0.1-ee
+  mi_version: 7.20.10
+  volumeClaim:
+    enableDefaultClass: true
+  nodeSelector:
+    appLable: oracle
+  tolerations: 
+  - key: app
+    operator: Equal
+    value: oracle
+    effect: NoSchedule
+  configMap:
+    memory : 4216
+  fluentd:
+    elasticsearchUrl: elasticsearch-sample-es-http.management.svc.cluster.local
+    username: elastic_test_user
+    password: elastic_test_user
+
+mongodb:
+  enabled: true
+  image:
+    registry: cloud.rnd.metricstream.com
+  mongo:
+    msUsername: metricstream
+    msPassword: password
+  fluentd:
+    elasticsearchUrl: elasticsearch-sample-es-http.management.svc.cluster.local
+    username: elastic_test_user
+    password: elastic_test_user
+
+tomcat:
+  enabled: true
+  image:
+    registry: cloud.rnd.metricstream.com
+  mi_version: 7.20.10
+  volumeClaim:
+    enableDefaultClass: true
+  fluentd:
+    elasticsearchUrl: elasticsearch-sample-es-http.management.svc.cluster.local
+    username: elastic_test_user
+    password: elastic_test_user
+
+activemq:
+  enabled: true
+  image:
+    registry: cloud.rnd.metricstream.com
+    tag: 5.14.5-jre8u212-b04-7.20.2
+  volumeClaim:
+    enableDefaultClass: true
+  fluentd:
+    elasticsearchUrl: elasticsearch-sample-es-http.management.svc.cluster.local
+    username: elastic_test_user
+    password: elastic_test_user
+
+elasticsearch:
+  enabled: true
+  image: cloud.rnd.metricstream.com/k8s/elasticsearch
+  imageTag: "2.4.1-jre8u212-b04-m7.3.3"
+  fluentd:
+    elasticsearchUrl: elasticsearch-sample-es-http.management.svc.cluster.local
+    username: elastic_test_user
+    password: elastic_test_user
+  volumeClaim:
+    enableDefaultClass: true
+    
+datarouter:
+  enabled: true
+  image:
+    registry: cloud.rnd.metricstream.com
+    tag: 2.17.7-jre8u212-b04
+  volumeClaim:
+    enableDefaultClass: true
+  fluentd:
+    elasticsearchUrl: elasticsearch-sample-es-http.management.svc.cluster.local
+    username: elastic_test_user
+    password: elastic_test_user
+
+libreoffice:
+  enabled: true
+  image:
+    registry: cloud.rnd.metricstream.com
+    tag: 6.2.5.2.r2-jre8u212-b04-7.20.2
+  mi_version: 7.20.10
+  volumeClaim:
+    libreoffice:
+      enableDefaultClass: true
+
+serviceAccount:
+  create: true
+  name: common-service-account
+
+global:
+  resourceSize: small
+  resourceUnit:
+    small:
+      storage:
+        size:
+          ACTIVEMQ: 1
+          ELASTICSEARCH: 2
+          MONGO: 1
+          ORACLE: 20
+          TOMCAT: 10
+          LIBREOFFICE: 1
+      memory:
+        max:
+          ORACLE: 3072
+          TOMCAT: 3072
+          ACTIVEMQ: 250
+          ELASTICSEARCH: 1024
+          MONGO: 250
+          DATAROUTER: 250
+          LIBREOFFICE: 250
+      cpu:
+        max:
+          ORACLE: 1000
+          TOMCAT: 1000
+          ACTIVEMQ: 100
+          ELASTICSEARCH: 500
+          MONGO: 100
+          DATAROUTER: 100
+          LIBREOFFICE: 100
+    medium: 
+      storage:
+        size:
+          ACTIVEMQ: 50
+          ELASTICSEARCH: 100
+          MONGO: 55
+          ORACLE: 400
+          TOMCAT: 400
+      memory:
+        max:
+          ORACLE: 12288
+          TOMCAT: 8192
+          ACTIVEMQ: 2048
+          ELASTICSEARCH: 4096
+          MONGO: 2048
+          DATAROUTER: 2048
+          LIBREOFFICE: 2048
+      cpu:
+        max:
+          ORACLE: 3000
+          TOMCAT: 2000
+          ACTIVEMQ: 500
+          ELASTICSEARCH: 1000
+          MONGO: 500
+          DATAROUTER: 500
+          LIBREOFFICE: 500
+    large:
+      storage:
+        size:
+          ACTIVEMQ: 100
+          ELASTICSEARCH: 300
+          MONGO: 95
+          ORACLE: 750
+          TOMCAT: 750
+      memory:
+        max:
+          ORACLE: 24576
+          TOMCAT: 18432
+          ACTIVEMQ: 4096
+          ELASTICSEARCH: 8192
+          MONGO: 4096
+          DATAROUTER: 4096
+          LIBREOFFICE: 2048
+      cpu:
+        max:
+          ORACLE: 6000
+          TOMCAT: 4000
+          ACTIVEMQ: 1000
+          ELASTICSEARCH: 2000
+          MONGO: 1000
+          DATAROUTER: 1000
+          LIBREOFFICE: 1000
+    xlarge:
+      storage:
+        size:
+          ACTIVEMQ: 100
+          ELASTICSEARCH: 500
+          MONGO: 395
+          ORACLE: 1500
+          TOMCAT: 1500
+      memory:
+        max:
+          ORACLE: 49152
+          TOMCAT: 36864
+          ACTIVEMQ: 8192
+          ELASTICSEARCH: 16384
+          MONGO: 8192
+          DATAROUTER: 8192
+          LIBREOFFICE: 4096
+      cpu:
+        max:
+          ORACLE: 12000
+          TOMCAT: 8000
+          ACTIVEMQ: 2000
+          ELASTICSEARCH: 4000
+          MONGO: 2000
+          DATAROUTER: 2000
+          LIBREOFFICE: 2000

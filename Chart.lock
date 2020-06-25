@@ -1,0 +1,24 @@
+dependencies:
+- name: oracle
+  repository: https://cloud.rnd.metricstream.com/chartrepo/k8s
+  version: 7.0.2006
+- name: mongodb
+  repository: https://cloud.rnd.metricstream.com/chartrepo/k8s
+  version: 7.0.2006
+- name: tomcat
+  repository: https://cloud.rnd.metricstream.com/chartrepo/k8s
+  version: 7.0.2006
+- name: activemq
+  repository: https://cloud.rnd.metricstream.com/chartrepo/k8s
+  version: 7.0.2006
+- name: elasticsearch
+  repository: https://cloud.rnd.metricstream.com/chartrepo/k8s
+  version: 7.0.2006
+- name: datarouter
+  repository: https://cloud.rnd.metricstream.com/chartrepo/k8s
+  version: 7.0.2006
+- name: libreoffice
+  repository: https://cloud.rnd.metricstream.com/chartrepo/k8s
+  version: 7.0.2006
+digest: sha256:73e99bf5b6af9b6873836df97a7515dae09500b20af16463141f9010efcbabbc
+generated: "2020-06-25T12:08:21.191698912+05:30"
