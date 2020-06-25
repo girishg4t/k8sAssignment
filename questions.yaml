@@ -31,37 +31,40 @@ questions:
   label: Password
   required: true
 - variable: ismsRepo
-  default: true
+  default: MS
   description: "Select Repo"
-  label: MS OR AWS
-  type: boolean
+  label: Select Repo
   group: MSREPO
+  type: enum
+  options:
+    - MS
+    - AWS
 - variable: oracle.msrepo.url
   default: http://10.100.1.97:8081/msrepo/k8s/ms-ri/7.20.6
   type: string
   group: MSREPO
   label: MS Repo URL
-  show_if: "ismsRepo=true"
+  show_if: "ismsRepo=MS"
 - variable: oracle.aws.s3.url
   type: string
   group: AWS URL
   label: URL
-  show_if: "ismsRepo=false"
+  show_if: "ismsRepo=AWS"
 - variable: oracle.aws.region
   default: Provide region name
   type: string
   group: AWS Credentials
   label: Region Name
-  show_if: "ismsRepo=false"
+  show_if: "ismsRepo=AWS"
 - variable: oracle.aws.access.key
   default: Provide access key 
   type: string
   group: AWS Credentials
   label: Access Key 
-  show_if: "ismsRepo=false"
+  show_if: "ismsRepo=AWS"
 - variable: oracle.aws.secret.access.key
   default: Provide secret access key
   type: string
   group: AWS Credentials
   label: Secret Access Key
-  show_if: "ismsRepo=false"
+  show_if: "ismsRepo=AWS"
