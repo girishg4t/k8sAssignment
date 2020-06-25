@@ -1,43 +1,67 @@
+categories:
+- Input
 questions:
-- variable: conditionort1
-  default: false
-  description: ""
-  label: Condition OR Test1
-  type: boolean
-  group: "testor"
-- variable: conditionort2
-  default: false
-  description: ""
-  label: Condition OR Test2
-  type: boolean
-  group: "testor"
-- variable: conditionshow
-  default: "show me"
-  description: ""
-  label: Condition Show with OR
+- variable: global.resourceSize
+  default: small
+  description: |
+    What is the resource unit you would like to allocate for the deployment?
+      Small -> 4 CPU Core & 16 GB RAM
+      Medium -> 8 CPU Core & 32 GB RAM
+      Large -> 16 CPU Core & 64 GB RAM
+      Xlarge (eXtra Large) -> 32 CPU Core & 128 GB RAM
+  type: enum
+  group: Resource Unit
+  options:
+    - small
+    - medium
+    - large
+    - xlarge
+  label: Select Resource Unit Size?
+  required: true
+- variable: oracle.oracle.username
+  default: metricstream
   type: string
-  show_if: "conditionort1=true||conditionort2=true"
-  group: "testor"
-
-#test ingress
-- variable: ingress.enabled
-  default: false
-  description: "Expose app using Layer 7 Load Balancer - ingress"
-  type: boolean
-  label: Expose app using Layer 7 Load Balancer
-  show_subquestion_if: true
-  group: "Services and Load Balancing"
-  subquestions:
-  - variable: ingress.hosts[0].name
-    default: "xip.io"
-    description: "Hostname to your Fluentd installation"
-    type: hostname
-    required: true
-    label: Hostname
-- variable: testxip
-  default: "testxip"
-  description: "testxip"
+  group: Oracle Credentials
+  label: User Name
+  required: true
+- variable: oracle.oracle.password
+  default: password
   type: string
-  show_if: "ingress.hosts[0].name=xip.io"
-  label: "only show up when ingress.hosts[0].name=xip.io"
-  group: "Services and Load Balancing"
+  group: Oracle Credentials
+  label: Password
+  required: true
+- variable: ismsRepo
+  default: true
+  description: "Select Repo"
+  label: MS OR AWS
+  type: boolean
+  group: MSREPO
+- variable: oracle.msrepo.url
+  default: http://10.100.1.97:8081/msrepo/k8s/ms-ri/7.20.6
+  type: string
+  group: MSREPO
+  label: MS Repo URL
+  show_if: "ismsRepo=true"
+- variable: oracle.aws.s3.url
+  type: string
+  group: AWS URL
+  label: URL
+  show_if: "ismsRepo=false"
+- variable: oracle.aws.region
+  default: Provide region name
+  type: string
+  group: AWS Credentials
+  label: Region Name
+  show_if: "ismsRepo=false"
+- variable: oracle.aws.access.key
+  default: Provide access key 
+  type: string
+  group: AWS Credentials
+  label: Access Key 
+  show_if: "ismsRepo=false"
+- variable: oracle.aws.secret.access.key
+  default: Provide secret access key
+  type: string
+  group: AWS Credentials
+  label: Secret Access Key
+  show_if: "ismsRepo=false"
